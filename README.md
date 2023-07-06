@@ -1,4 +1,4 @@
-## rmad
+## jdiff
 
 A very minimal autodiff implementation in Julia. A simple example:
 
