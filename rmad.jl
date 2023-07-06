@@ -3,7 +3,6 @@ mutable struct Node
   grad::Float64
   children::Vector{Node}
   backward_fn::Union{Nothing, Function}
-
   Node(value::Float64, children=Node[], backward_fn=nothing) = new(value, 0.0, children, backward_fn)
 end
 
@@ -39,6 +38,15 @@ function Base.:/(a::Node, b::Node)
   out.backward_fn = function ()
     a.grad += out.grad / b.value
     b.grad -= out.grad * a.value / b.value^2
+  end
+  return out
+end
+
+function Base.:^(a::Node, b::Node)
+  out = Node(a.value ^ b.value, [a, b])
+  out.backward_fn = function ()
+    a.grad += out.grad * b.value * a.value^(b.value - 1)
+    b.grad += out.grad * log(a.value) * a.value^b.value
   end
   return out
 end
